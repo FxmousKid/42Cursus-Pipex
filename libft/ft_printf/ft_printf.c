@@ -18,7 +18,9 @@ int	ft_printf_aux(char *str, t_conversionFuncPtr *conv_table, va_list args)
 	t_args	s_args;
 
 	counter = 0;
-	s_args = (t_args){.args = args, .rendue = 0};
+	s_args = (t_args){};
+	s_args.rendue = 0;
+	va_copy(s_args.args, args);
 	while (str && str[counter])
 	{
 		if (str[counter] != '%')
