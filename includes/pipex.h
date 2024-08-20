@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:19:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/20 19:07:51 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/20 23:10:24 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,26 @@
 # define HIDDEN_TXT		"\e[8m"
 # define END_TXT		"\e[0m"
 
+# define STRINGIFY(x) #x
+# define TOSTRING(x) STRINGIFY(x)
 
-void	print_exited_with_code(int code);
+# define DBG(reason) reason " at line " \
+TOSTRING(__LINE__) " in file " __FILE__ "\n"
+
+typedef struct s_pipex
+{
+	int		fd_in;
+	int		fd_out;
+	pid_t	*pids;
+
+	
+	
+}			t_pipex;
+
+
+// Error management
+void	print_code_and_exit(int code);
 void	debug(char *str);
+void	ft_error(char *str);
 
 #endif
