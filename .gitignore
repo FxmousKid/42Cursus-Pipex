@@ -1,0 +1,10 @@
+# Dev env Files
+**compile_commands.json
+**.cache
+
+
+# Build Files
+build/
+build_bonus/
+pipex
+pipex_bonus
