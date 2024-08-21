@@ -6,7 +6,7 @@
 #    By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/20 15:53:25 by inazaria          #+#    #+#              #
-#    Updated: 2024/08/20 23:03:08 by inazaria         ###   ########.fr        #
+#    Updated: 2024/08/21 15:38:28 by inazaria         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,9 @@ DEBUG_BUILD_PATH_BONUS	= ./build_bonus/debugging_function
 SRC_STD_NAMES	= pipex.c
 SRC_STD_NAMES	+= pipex_utils.c
 SRC_STD_NAMES	+= error_management/error_management.c
+SRC_STD_NAMES	+= error_management/free_pipex.c
+
+
 
 SRC_FILES_STD = $(addprefix $(SRC_DIR_STD), $(SRC_STD_NAMES))
 OBJ_FILES_STD = $(patsubst $(SRC_DIR_STD)%.c, $(BUILD_DIR_STD)%.o, $(SRC_FILES_STD))

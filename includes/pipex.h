@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:19:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/20 23:10:24 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:37:55 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,8 @@ typedef struct s_pipex
 	int		fd_in;
 	int		fd_out;
 	pid_t	*pids;
-
-	
-	
+	char	**cmds;
+	char	**env;
 }			t_pipex;
 
 
@@ -54,5 +53,7 @@ typedef struct s_pipex
 void	print_code_and_exit(int code);
 void	debug(char *str);
 void	ft_error(char *str);
+int		free_t_pipex_and_close(t_pipex *data);
+void	free_t_pipex(t_pipex *data);
 
 #endif
