@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:22:11 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/20 23:02:46 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/23 17:20:50 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@
 
 void	debug(char *str)
 {
-	printf_clr(RED_TXT, "%s", str);
-	printf_clr(END_TXT, "");
+	write(2, RED_TXT, 7);
+	write(2, str, ft_strlen(str));
+	write(2, END_TXT, 4);
 }
 
 #else

@@ -6,11 +6,24 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 14:58:22 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/22 22:15:22 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/23 13:21:20 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	free_split(char **tab)
+{
+	int	idx;
+
+	idx = 0;
+	while (tab[idx])
+	{
+		free(tab[idx]);
+		idx++;
+	}
+	free(tab);
+}
 
 void	free_t_pipex(t_pipex *data)
 {

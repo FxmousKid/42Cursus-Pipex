@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 16:30:35 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/22 21:20:52 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/24 21:28:54 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,14 @@ t_pipex	*make_t_pipex(int argc, char *argv[], char *env[])
 	if (!open_files(data, argc, argv))
 		return (free_t_pipex(data),
 			debug(DBG("Failed to open_files()")), NULL);
+	if (pipe(data->new_pipe) < 0)
+		return (free_t_pipex_and_close(data),
+			debug(DBG("Failed to pipe()")), NULL);
 	data->env = env;
 	data->cmds = argv + 2;
 	data->cmds[argc - 3] = 0;
 	data->cmd_count = argc - 3;
 	data->cmd_index = 0;
-	data->current_cmd_path = 0;
+	data->current_cmd_path = NULL;
 	return (data);
 }

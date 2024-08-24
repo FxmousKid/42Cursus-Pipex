@@ -8,3 +8,8 @@ build/
 build_bonus/
 pipex
 pipex_bonus
+**vgcore*
+
+# Testing files
+out.txt
+in.txt
