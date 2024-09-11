@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:22:35 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/24 21:27:07 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/27 16:59:03 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ int	pipex(int argc, char *argv[], char *env[])
 	if (!launch_childs(data))
 		return (debug(DBG("Failed to launch_childs()")),
 			free_t_pipex_and_close(data), 0);
-
-
 	free_t_pipex_and_close(data);
 	return (1);
 }
@@ -32,13 +30,13 @@ int	main(int argc, char *argv[], char *env[])
 {
 	if (argc < 2)
 	{
-		printf_clr(RED_TXT, "Invalid arg count !\n");
-		print_code_and_exit(1);
+		print_correct_usage();
+		return (1);
 	}
 	if (!pipex(argc, argv, env))
 	{
 		debug(DBG("Failed to run pipex() call"));
-		print_code_and_exit(1);
+		return (1);
 	}
-	print_code_and_exit(0);
+	return (0);
 }

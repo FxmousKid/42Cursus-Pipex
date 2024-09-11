@@ -6,12 +6,28 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 16:30:35 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/24 21:28:54 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/27 17:18:41 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include <unistd.h>
+
+int	open_correct_outfile(int has_heredoc, char *path)
+{
+	int	fd;
+
+	if (has_heredoc)
+	{
+		fd = open(path, O_RDWR | O_CREAT | O_APPEND, 0644);
+		return (fd);
+	}
+	else
+	{
+		fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
+		return (fd);
+	}
+}
 
 int	open_files(t_pipex *data, int argc, char *argv[])
 {
@@ -25,7 +41,7 @@ int	open_files(t_pipex *data, int argc, char *argv[])
 		write(2, "\e[0m", 4);
 		return (0);
 	} 
-	data->fd_out = open(argv[argc - 1], O_RDWR | O_CREAT | O_TRUNC , 0644);
+	data->fd_out = open_correct_outfile(data->has_here_doc, argv[argc - 1]);
 	if (data->fd_out < 0)
 	{
 		write(2, argv[argc - 1], ft_strlen(argv[argc - 1]));
@@ -40,6 +56,20 @@ int	open_files(t_pipex *data, int argc, char *argv[])
 	return (1);
 }
 
+int	set_heredoc_status_or_open_infile(t_pipex *data, int argc, char *argv[])
+{
+	if (ft_strncmp(argv[1], "here_doc", ft_strlen("here_doc")) != 0)
+	{
+		if (!open_files(data, argc, argv))
+			return (debug(DBG("Failed to open_files()")), 0);
+		data->has_here_doc = 0;
+	}
+	else
+		data->has_here_doc = 1;
+	
+	return (1);
+}
+
 t_pipex	*make_t_pipex(int argc, char *argv[], char *env[])
 {
 	t_pipex	*data;
@@ -51,17 +81,15 @@ t_pipex	*make_t_pipex(int argc, char *argv[], char *env[])
 	if (data->pids == NULL)
 		return (free_t_pipex(data), 
 			debug(DBG("Failed to calloc() data->pids")), NULL);	
-	if (!open_files(data, argc, argv))
+	if (!set_heredoc_status_or_open_infile(data, argc, argv))
 		return (free_t_pipex(data),
-			debug(DBG("Failed to open_files()")), NULL);
-	if (pipe(data->new_pipe) < 0)
-		return (free_t_pipex_and_close(data),
-			debug(DBG("Failed to pipe()")), NULL);
+			debug(DBG("Failed to set_heredoc_status_or_open_infile()")), NULL);
 	data->env = env;
 	data->cmds = argv + 2;
 	data->cmds[argc - 3] = 0;
 	data->cmd_count = argc - 3;
 	data->cmd_index = 0;
 	data->current_cmd_path = NULL;
+	data->exit_code = 0;
 	return (data);
 }

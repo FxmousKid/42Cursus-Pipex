@@ -6,22 +6,16 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:24:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/22 23:32:36 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/27 15:25:59 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	print_code_and_exit(int code)
+void	print_correct_usage(void)
 {
-	ft_printf("\n");
-	printf_clr(BOLD_TXT, "Exited with code : ");
-	if (code == 0)
-		printf_clr(GREEN_TXT, "%d\n", code);
-	else
-		printf_clr(RED_TXT, "%d\n", code);
-	printf_clr(END_TXT, "");
-	exit(code);
+	ft_printf("Invalid use of pipex\nUsage: ");
+	printf_clr(YELLOW_TXT, "./pipex infile cmd1 cmd2 [...] outfile\n");
 }
 
 void	ft_error(char *str)

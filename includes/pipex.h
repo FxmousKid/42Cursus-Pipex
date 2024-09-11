@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:19:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/23 15:45:44 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/08/27 16:25:20 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,23 +45,24 @@ typedef struct s_pipex
 {
 	int		fd_in;
 	int		fd_out;
+	int		has_here_doc;
 	pid_t	*pids;
+	int		exit_code;
 	char	**cmds;
 	int		cmd_count;
 	int		cmd_index;
 	char	*current_cmd_path;
 	char	**env;
-	int		old_pipe[2];
-	int		new_pipe[2];
+	int		pipe_fds[2];
 }			t_pipex;
 
 
 // Error management
 void	stderr_file_error(char *file, char *text);
-void	print_code_and_exit(int code);
 void	ft_error(char *str);
 void	debug(char *str);
 void	free_split(char **tab);
+void	print_correct_usage(void);
 
 // Handling allocations
 t_pipex	*make_t_pipex(int argc, char *argv[], char *env[]);
@@ -72,6 +73,9 @@ void	free_t_pipex(t_pipex *data);
 int		launch_childs(t_pipex *data);
 int		find_path(t_pipex *data, char **env, char *cmd);
 int		exec_command(t_pipex *data, char **cmd_args);
+
+// Handling here_doc
+int	handle_heredoc_parsing(t_pipex *data);
 
 
 #endif
