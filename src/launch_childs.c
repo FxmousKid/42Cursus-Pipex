@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 19:51:24 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/11 20:05:43 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 01:44:59 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,62 +20,20 @@ int	handle_heredoc_parsing(t_pipex *data)
 	return (1);
 }
 
-int	handle_parent_redirection(t_pipex *data, int cmd_idx)
-{
-	if (close(data->pipe_fds[1]) < 0)
-		return (debug(DBG("Failed to close pipe_fds[1]")), 0);
-	if (cmd_idx > 0 && cmd_idx < data->cmd_count)
-	{
-		if (dup2(data->pipe_fds[0], STDIN_FILENO) < 0)
-			return (debug(DBG("Failed to dup2 stdin")), 0);
-		if (close(data->pipe_fds[0]) < 0)
-			return (debug(DBG("Failed to close pipe_fds[0]")), 0);
-	}
-	else if (cmd_idx == 0)
-	{
-		// if (dup2(data->fd_in, STDIN_FILENO) < 0)
-		// 	return (debug(DBG("Failed to dup2 stdin")), 0);
-		// if (close(data->fd_in) < 0)
-		// 	return (debug(DBG("Failed to close fd_in")), 0);
-		if (close(data->pipe_fds[0]) < 0)
-			return (debug(DBG("Failed to close pipe_fds[0]")), 0);
-	}
-	return (1);
-}
-
 int	fork_and_exec(t_pipex *data, char **cmd_args)
 {
 	int	cmd_idx;
 
 	if (pipe(data->pipe_fds) < 0)
 		return (debug(DBG("Failed to pipe()")), 0);
-	fprintf(stderr, "data->pipe_fds[0] = %d\n", data->pipe_fds[0]);
-	fprintf(stderr, "data->pipe_fds[1] = %d\n", data->pipe_fds[1]);
-	fprintf(stderr, "data->fd_in = %d\n", data->fd_in);
-	fprintf(stderr, "data->fd_out = %d\n\n", data->fd_out);
-	fflush(stderr);
 	cmd_idx = data->cmd_index;
 	if (data->has_here_doc && !handle_heredoc_parsing(data))
 		return (debug(DBG("Failed to handle_heredoc_parsing()")), 0);
-	
-	if (data->cmd_index == 0)
-	{
-		if (dup2(data->fd_in, STDIN_FILENO) < 0)
-			return (debug(DBG("Failed to dup2 stdin")), 0);
-		if (close(data->fd_in) < 0)
-			return (debug(DBG("Failed to close fd_in")), 0);
-	}
-
 	data->pids[cmd_idx] = fork();
 	if (data->pids[cmd_idx] < 0)
 		return (debug(DBG("Failed to fork()")), 0);	
 	else if (data->pids[cmd_idx] == 0)
 		exec_command(data, cmd_args);
-	else if (data->pids[cmd_idx] > 0)
-	{
-		if (!handle_parent_redirection(data, cmd_idx))
-			return (debug(DBG("Failed to handle_parent_redirection()")), 0);
-	}
 	return (1);
 }
 
@@ -86,12 +44,14 @@ int	loop_on_commands(t_pipex *data)
 	while (data->cmd_index < data->cmd_count)
 	{
 		cmd_args = ft_split(data->cmds[data->cmd_index], ' ');
+		if (!cmd_args)
+			return (debug(DBG("Failed to split command")), 0);
 		if (!find_path(data, data->env, cmd_args[0]))	
 			return (stderr_file_error(cmd_args[0], "command not found...\n"),
 				free_split(cmd_args), 0);
 		if (!fork_and_exec(data, cmd_args))
-			return (free_split(cmd_args), 
-				debug(DBG("Failed to fork_and_exec()")), 0);
+			return (debug(DBG("Failed to fork_and_exec()")), 
+				free_split(cmd_args), 0);
 		free_split(cmd_args);
 		free(data->current_cmd_path);
 		data->cmd_index++;

@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:19:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/27 16:25:20 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 01:00:33 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ TOSTRING(__LINE__) " in file " __FILE__ "\n"
 
 typedef struct s_pipex
 {
-	int		fd_in;
-	int		fd_out;
+	char *	outfile_path;
+	char *	infile_path;
 	int		has_here_doc;
 	pid_t	*pids;
 	int		exit_code;
@@ -65,9 +65,8 @@ void	free_split(char **tab);
 void	print_correct_usage(void);
 
 // Handling allocations
-t_pipex	*make_t_pipex(int argc, char *argv[], char *env[]);
-int		free_t_pipex_and_close(t_pipex *data);
-void	free_t_pipex(t_pipex *data);
+void	make_t_pipex(t_pipex *data, int argc, char *argv[], char *env[]);
+void	free_split(char **tab);
 
 // Launching childs and forks
 int		launch_childs(t_pipex *data);
@@ -75,7 +74,13 @@ int		find_path(t_pipex *data, char **env, char *cmd);
 int		exec_command(t_pipex *data, char **cmd_args);
 
 // Handling here_doc
-int	handle_heredoc_parsing(t_pipex *data);
+int		handle_heredoc_parsing(t_pipex *data);
 
+// Handling files
+int		open_infile(t_pipex *data);
+int		open_correct_outfile(t_pipex *data);
+
+// Utils
+void	display_pipex_t(t_pipex *data);
 
 #endif

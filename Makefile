@@ -6,7 +6,7 @@
 #    By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/20 15:53:25 by inazaria          #+#    #+#              #
-#    Updated: 2024/08/23 15:47:20 by inazaria         ###   ########.fr        #
+#    Updated: 2024/09/12 00:22:21 by inazaria         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,13 +27,14 @@ DEBUG_FILE_PATH_BONUS = ./src_bonus/debugging_function
 DEBUG_BUILD_PATH_STD 	= ./build/error_management/debugging_function
 DEBUG_BUILD_PATH_BONUS	= ./build_bonus/debugging_function
 
-SRC_STD_NAMES	= pipex.c
+SRC_STD_NAMES	= main.c
 SRC_STD_NAMES	+= make_t_pipex.c
 SRC_STD_NAMES	+= launch_childs.c
 SRC_STD_NAMES	+= exec.c
 SRC_STD_NAMES	+= exec_utils.c
+SRC_STD_NAMES	+= manage_files.c
 SRC_STD_NAMES	+= error_management/error_management.c
-SRC_STD_NAMES	+= error_management/free_pipex.c
+SRC_STD_NAMES	+= error_management/free_utils.c
 
 
 

@@ -6,57 +6,84 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 12:11:43 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/11 20:06:35 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 01:46:08 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <stdio.h>
-#include <unistd.h>
 
-int	pipe_redirection_child(t_pipex *data)
+int	first_command_child(t_pipex *data)
 {
-	fprintf(stderr, "exec %s from child number %d\n", data->current_cmd_path, data->cmd_index);
-	fflush(stderr);
+	int	fd;
+
+	fd = open_infile(data);
+	if (fd < 0)
+		return (debug(DBG("Failed to open_infile()")), 0);
+	if (dup2(fd, STDIN_FILENO) < 0)
+		return (debug(DBG("Failed to dup2 stdin")), 0);
+	if (close(fd) < 0)
+		return (debug(DBG("Failed to close infile")), 0);
+	if (dup2(data->pipe_fds[1], STDOUT_FILENO) < 0)
+		return (debug(DBG("Failed to dup2 stdout")), 0);
+	if (close(data->pipe_fds[1]) < 0)
+		return (debug(DBG("Failed to close pipe_fds[1]")), 0);
+	if (close(data->pipe_fds[0]) < 0)
+		return (debug(DBG("Failed to close pipe_fds[0]")), 0);
+	return (1);
+}
+
+int	middle_commands_child(t_pipex *data)
+{
+	if (dup2(data->pipe_fds[0], STDIN_FILENO) < 0)
+		return (debug(DBG("Failed to dup2 stdin")), 0);
 	if (close(data->pipe_fds[0]) < 0)
 		return (debug(DBG("Failed to close pipe_fds[0]")), 0);
 	if (dup2(data->pipe_fds[1], STDOUT_FILENO) < 0)
 		return (debug(DBG("Failed to dup2 stdout")), 0);
 	if (close(data->pipe_fds[1]) < 0)
 		return (debug(DBG("Failed to close pipe_fds[1]")), 0);
-	if (close(data->fd_out) < 0)
-		return (debug(DBG("Failed to close fd_out")), 0);
 	return (1);
 }
 
 
-int	last_redirection_child(t_pipex *data)
+
+int	last_command_child(t_pipex *data)
 {
-	fprintf(stderr, "exec %s from child number %d\n", data->current_cmd_path, data->cmd_index);
-	fflush(stderr);
+	int	fd;
+
+	fd = open_correct_outfile(data);
+	if (fd < 0)
+		return (debug(DBG("Failed to open_correct_outfile()")), 0);
+	if (dup2(data->pipe_fds[0], STDIN_FILENO) < 0)
+		return (debug(DBG("Failed to dup2 stdin")), 0);
 	if (close(data->pipe_fds[0]) < 0)
-		return (debug(DBG("Failed to close pipe_fds[0]")), 0);
-	if (close(data->pipe_fds[1]) < 0)
 		return (debug(DBG("Failed to close pipe_fds[1]")), 0);
-	if (dup2(data->fd_out, STDOUT_FILENO) < 0)
+	if (dup2(fd, STDOUT_FILENO) < 0)
 		return (debug(DBG("Failed to dup2 stdout")), 0);
-	if (close(data->fd_out) < 0)
+	if (close(fd) < 0)
 		return (debug(DBG("Failed to close fd_out")), 0);
+	if (close(data->pipe_fds[1]) < 0)
+		return (debug(DBG("Failed to close pipe_fds[0]")), 0);
 	return (1);
 }
 
 
 int	exec_command(t_pipex *data, char **cmd_args)
 {
-	if (data->cmd_index == data->cmd_count - 1)
+	if (data->cmd_index == 0)
 	{
-		if (!last_redirection_child(data))
-			return (debug(DBG("Failed to last_redirection_child()")), 0);
+		if (!first_command_child(data))
+			return (debug(DBG("Failed to first_command_child()")), 0);
+	}
+	else if (data->cmd_index == data->cmd_count - 1)
+	{
+		if (!last_command_child(data))
+			return (debug(DBG("Failed to last_command_child()")), 0);
 	}
 	else
 	{
-		if (!pipe_redirection_child(data))
-			return (debug(DBG("Failed to pipe_redirection_child()")), 0);
+		if (!middle_commands_child(data))
+			return (debug(DBG("Failed to middle_commands_child()")), 0);
 	}
 	execve(data->current_cmd_path, cmd_args, data->env);
 	return (1);	

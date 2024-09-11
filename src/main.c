@@ -1,28 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:22:35 by inazaria          #+#    #+#             */
-/*   Updated: 2024/08/27 16:59:03 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 01:42:34 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include <fcntl.h>
 
 int	pipex(int argc, char *argv[], char *env[])
 {
-	t_pipex	*data;
+	t_pipex	data;
+	pid_t	pids[1024];
 
-	data = make_t_pipex(argc, argv, env);
-	if (!data)
-		return (debug(DBG("Failed to make_t_pipex()")), 0);	
-	if (!launch_childs(data))
-		return (debug(DBG("Failed to launch_childs()")),
-			free_t_pipex_and_close(data), 0);
-	free_t_pipex_and_close(data);
+	ft_bzero(&data, sizeof(t_pipex) * 1);
+	ft_bzero(&pids, sizeof(pid_t) * 1024);
+	data.pids = pids;
+	make_t_pipex(&data, argc, argv, env);
+	display_pipex_t(&data);
+	if (!launch_childs(&data))
+		return (debug(DBG("Failed to launch_childs()")), 0);
 	return (1);
 }
 
