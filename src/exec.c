@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 12:11:43 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/12 16:03:20 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 17:47:19 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	middle_commands_child(t_pipex *data)
 	// 	fprintf(stderr, "%s\n", line);
 	// 	
 	if (dup2(data->old_read_fd, STDIN_FILENO) < 0)
-		return (debug(DBG("Failed to dup2 stdin")), 0);
+		return (perror(""), debug(DBG("Failed to dup2 stdin")), 0);
 	if (close(data->old_read_fd) < 0)
 		return (debug(DBG("Failed to close pipe_fds[0]")), 0);
 	if (dup2(data->pipe_fds[1], STDOUT_FILENO) < 0)
@@ -70,13 +70,14 @@ int	last_command_child(t_pipex *data)
 	if (close(data->pipe_fds[1]) < 0)
 		return (debug(DBG("Failed to close pipe_fds[1]")), 0);
 	if (close(data->pipe_fds[0]) < 0)
-		return (debug(DBG("Failed to close data->pipe_fds[0]")), 0);
+		return (debug(DBG("Failed to close pipe_fds[0]")), 0);
 	return (1);
 }
 
 
 int	exec_command(t_pipex *data, char **cmd_args)
 {
+	// display_pipex_t(data);
 	if (data->cmd_index == 0)
 	{
 		if (!first_command_child(data))

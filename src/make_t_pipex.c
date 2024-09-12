@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 16:30:35 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/12 15:41:12 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 17:21:36 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,16 @@ int	set_heredoc_status(t_pipex *data, char *argv[])
 
 void display_pipex_t(t_pipex *data)
 {
-	int	i;
+	static int	i = 0;
 
 	ft_printf("\n\n------ PIPEX STRUCTURE ------\n");
 	ft_printf("data->has_here_doc: %d\n", data->has_here_doc);
+	ft_printf("data->old_read_fd: %d\n", data->old_read_fd);
+	ft_printf("data->pipe_fds[0]: %d\n", data->pipe_fds[0]);
+	ft_printf("data->pipe_fds[1]: %d\n", data->pipe_fds[1]);
 	ft_printf("data->infile_path: %s\n", data->infile_path);
 	ft_printf("data->outfile_path: %s\n", data->outfile_path);
 	ft_printf("data->env: %s\n", data->env[0]);
-	i = 0;
 	ft_printf("data->pids: [");
 	while (i < data->cmd_count - 1)
 		ft_printf("%d, ", data->pids[i++]);
@@ -51,12 +53,8 @@ void display_pipex_t(t_pipex *data)
 
 void	make_t_pipex(t_pipex *data, int argc, char *argv[], char *env[])
 {
-	// data->pids = (pid_t *) ft_calloc(sizeof(pid_t), argc - 3);
-	// if (data->pids == NULL)
-	// 	return (free_t_pipex(data), 
-	// 		debug(DBG("Failed to calloc() data->pids")), NULL);	
 	set_heredoc_status(data, argv);
-	data->old_read_fd = 0;
+	data->old_read_fd = -1;
 	data->infile_path = argv[1];
 	data->outfile_path = argv[argc - 1];
 	data->env = env;
