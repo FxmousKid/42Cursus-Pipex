@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 19:51:24 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/12 19:10:06 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 19:31:33 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,10 @@ int	loop_on_commands(t_pipex *data)
 				free_split(cmd_args), 0);
 		free_split(cmd_args);
 		free(data->current_cmd_path);
+		data->current_cmd_path = NULL;
 		data->cmd_index++;
 	}
+	display_pipex_t(data);
 	return (1);
 }
 
