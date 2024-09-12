@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 16:30:35 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/12 01:38:08 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 15:41:12 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	make_t_pipex(t_pipex *data, int argc, char *argv[], char *env[])
 	// 	return (free_t_pipex(data), 
 	// 		debug(DBG("Failed to calloc() data->pids")), NULL);	
 	set_heredoc_status(data, argv);
+	data->old_read_fd = 0;
 	data->infile_path = argv[1];
 	data->outfile_path = argv[argc - 1];
 	data->env = env;

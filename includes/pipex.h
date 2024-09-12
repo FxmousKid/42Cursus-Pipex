@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:19:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/12 01:00:33 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/12 15:41:01 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_pipex
 	char	*current_cmd_path;
 	char	**env;
 	int		pipe_fds[2];
+	int		old_read_fd;
 }			t_pipex;
 
 
