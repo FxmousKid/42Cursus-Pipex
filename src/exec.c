@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 12:11:43 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/12 17:47:19 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:34:23 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,7 @@ int	first_command_child(t_pipex *data)
 }
 
 int	middle_commands_child(t_pipex *data)
-{
-	// char *line;
-	// fprintf(stderr, "\nTESTING INPUT :\n");
-	// while ((line = get_next_line(data->old_read_fd)) != NULL)
-	// 	fprintf(stderr, "%s\n", line);
-	// 	
+{ 	
 	if (dup2(data->old_read_fd, STDIN_FILENO) < 0)
 		return (perror(""), debug(DBG("Failed to dup2 stdin")), 0);
 	if (close(data->old_read_fd) < 0)
@@ -77,7 +72,6 @@ int	last_command_child(t_pipex *data)
 
 int	exec_command(t_pipex *data, char **cmd_args)
 {
-	// display_pipex_t(data);
 	if (data->cmd_index == 0)
 	{
 		if (!first_command_child(data))

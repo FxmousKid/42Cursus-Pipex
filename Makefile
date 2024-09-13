@@ -6,7 +6,7 @@
 #    By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/20 15:53:25 by inazaria          #+#    #+#              #
-#    Updated: 2024/09/12 00:22:21 by inazaria         ###   ########.fr        #
+#    Updated: 2024/09/13 17:45:50 by inazaria         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,16 +16,12 @@
 INCLUDES	= ./includes/
 
 SRC_DIR_STD 	= ./src/
-SRC_DIR_BONUS	= ./src_bonus/
 
 BUILD_DIR_STD	= ./build/
-BUILD_DIR_BONUS	= ./build_bonus/
 
 DEBUG_FILE_PATH_STD = ./src/error_management/debugging_function
-DEBUG_FILE_PATH_BONUS = ./src_bonus/debugging_function
 
 DEBUG_BUILD_PATH_STD 	= ./build/error_management/debugging_function
-DEBUG_BUILD_PATH_BONUS	= ./build_bonus/debugging_function
 
 SRC_STD_NAMES	= main.c
 SRC_STD_NAMES	+= make_t_pipex.c
@@ -35,8 +31,6 @@ SRC_STD_NAMES	+= exec_utils.c
 SRC_STD_NAMES	+= manage_files.c
 SRC_STD_NAMES	+= error_management/error_management.c
 SRC_STD_NAMES	+= error_management/free_utils.c
-
-
 
 SRC_FILES_STD = $(addprefix $(SRC_DIR_STD), $(SRC_STD_NAMES))
 OBJ_FILES_STD = $(patsubst $(SRC_DIR_STD)%.c, $(BUILD_DIR_STD)%.o, $(SRC_FILES_STD))
@@ -59,25 +53,25 @@ NC		:= $(shell echo -e "\033[0m")
 
 #<><><><><><><> Recipes <><><><><><><><><><><><><><><><><><>
 
-$(BUILD_DIR_STD)%.o : $(SRC_DIR_STD)%.c | libft
+$(BUILD_DIR_STD)%.o : $(SRC_DIR_STD)%.c
 	@$(MKDIR) $(dir $@)
 	@$(CC) -c $(CFLAGS) $< -o $@
 	@printf "$(BLUE)[CMP] Compiling $< ... $(NC)\n"
-
--include $(DEP_FILES_STD)
 
 libft : 
 	@echo -e "$(BROWN)[BLD] Building libft...$(NC)"
 	@$(MAKE) --no-print-directory -s -C libft all 
 	@echo -e "$(GREEN)[BLD] Libft built successfully.$(NC)"
 
-$(NAME_STD) : $(OBJ_FILES_STD) 
+-include $(DEP_FILES_STD)
+
+$(NAME_STD) : $(OBJ_FILES_STD) libft
 	@echo -e "$(BROWN)[BLD] Building Pipex executable...$(NC)"
 	@$(RM) $(DEBUG_BUILD_PATH).[od]
 	@$(RM) $(NAME_STD)
 	@echo -e "$(BROWN)[LNK] Linking object files ..."
 	@$(CC) $(CFLAGS) -c $(DEBUG_FILE_PATH_STD).c -o $(DEBUG_BUILD_PATH_STD).o
-	@$(CC) $(CFLAGS) $^ $(DEBUG_BUILD_PATH_STD).o -o $(NAME_STD) ./libft/libft.a
+	@$(CC) $(CFLAGS) $(OBJ_FILES_STD) $(DEBUG_BUILD_PATH_STD).o -o $(NAME_STD) ./libft/libft.a
 	@echo -e "$(GREEN)[BLD] Executable built successfully.$(NC)"
 
 all : $(NAME_STD)

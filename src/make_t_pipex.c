@@ -6,12 +6,11 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 16:30:35 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/12 17:21:36 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:34:36 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <time.h>
 #include <unistd.h>
 
 int	set_heredoc_status(t_pipex *data, char *argv[])
@@ -62,6 +61,6 @@ void	make_t_pipex(t_pipex *data, int argc, char *argv[], char *env[])
 	data->cmds[argc - 3] = 0;
 	data->cmd_count = argc - 3;
 	data->cmd_index = 0;
-	data->current_cmd_path = NULL;
+	bzero(data->current_cmd_path, sizeof(char) * 4096);
 	data->exit_code = 0;
 }

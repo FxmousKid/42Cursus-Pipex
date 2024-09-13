@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:22:35 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/12 19:28:37 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:35:06 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ int	pipex(int argc, char *argv[], char *env[])
 	ft_bzero(&pids, sizeof(pid_t) * 1024);
 	data.pids = pids;
 	make_t_pipex(&data, argc, argv, env);
-	display_pipex_t(&data);
-	ft_printf("\n\n\n");
 	if (!launch_childs(&data))
 		return (debug(DBG("Failed to launch_childs()")), 0);
 	return (1);
