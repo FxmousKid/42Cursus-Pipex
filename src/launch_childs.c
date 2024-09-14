@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 19:51:24 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/13 18:35:17 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/14 02:26:56 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,10 @@ int	fork_and_exec(t_pipex *data, char **cmd_args)
 	if (data->pids[cmd_idx] < 0)
 		return (debug(DBG("Failed to fork()")), 0);	
 	else if (data->pids[cmd_idx] == 0)
-	// {
-	// 	if (!exec_command(data, cmd_args))
-	// 		return (debug(DBG("Failed to exec_command()")), 0);
-	// }
-		exec_command(data, cmd_args);
+	{
+		if (!exec_command(data, cmd_args))
+			return (debug(DBG("Failed to exec_command()")), 0);
+	}
 	else if (data->pids[cmd_idx] > 0)
 	{
 		if (!close_pipes_parent(data))
@@ -61,9 +60,6 @@ int	loop_on_commands(t_pipex *data)
 		cmd_args = ft_split(data->cmds[data->cmd_index], ' ');
 		if (!cmd_args)
 			return (debug(DBG("Failed to split command")), 0);
-		if (!find_path(data, data->env, cmd_args[0]))	
-			return (stderr_file_error(cmd_args[0], "command not found...\n"),
-				free_split(cmd_args), debug(DBG("Failed to find_path()")), 0);
 		if (!fork_and_exec(data, cmd_args))
 			return (debug(DBG("Failed to fork_and_exec()")), 
 				free_split(cmd_args), 0);
@@ -76,16 +72,19 @@ int	loop_on_commands(t_pipex *data)
 int	launch_childs(t_pipex *data)
 {
 	int		pid_index;
+	int		status;
 		
 	if (!loop_on_commands(data))
 		return (debug(DBG("Failed to loop_on_commands()")), 0);
 	pid_index = 0;
 	while (pid_index < data->cmd_count)
 	{
-		if (data->exit_code == 0)
-			waitpid(data->pids[pid_index++], &data->exit_code, 0);
-		else
-			waitpid(data->pids[pid_index++], NULL, 0);	
+		waitpid(data->pids[pid_index++], &status, 0);
+		if (WIFEXITED(status))
+		{
+			if (!data->exit_code)
+				data->exit_code = WEXITSTATUS(status);
+		}	
 	}
 	return (1);
 }

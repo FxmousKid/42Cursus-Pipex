@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 15:46:55 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/13 18:02:10 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/14 01:54:22 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ int	find_path(t_pipex *data, char **env, char *cmd)
 	while (tmp)
 	{
 		len_till_colon = ft_strlen_till_char(tmp, ':');
+		if (!len_till_colon)
+			break;
 		tmp[len_till_colon] = 0;
 		ft_strlcpy(data->current_cmd_path, tmp, 4096);
 		ft_strlcat(data->current_cmd_path, "/", 4096);

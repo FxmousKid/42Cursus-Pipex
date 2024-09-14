@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 12:11:43 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/13 18:34:23 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/14 02:05:22 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,9 @@ int	last_command_child(t_pipex *data)
 
 int	exec_command(t_pipex *data, char **cmd_args)
 {
+	if (!find_path(data, data->env, cmd_args[0]))	
+		return (stderr_file_error(cmd_args[0], "command not found...\n"), \
+			debug(DBG("Failed to find_path()")), 0);
 	if (data->cmd_index == 0)
 	{
 		if (!first_command_child(data))
