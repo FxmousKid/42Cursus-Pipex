@@ -6,22 +6,31 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 19:51:24 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/14 02:26:56 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/15 23:56:31 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	handle_heredoc_parsing(t_pipex *data)
+int	handle_fork(t_pipex *data, char **cmd_args)
 {
-	data->has_here_doc = 0;
-	return (1);
-}
+	int	cmd_idx;
 
-int	close_pipes_parent(t_pipex *data)
-{
-	if (close(data->pipe_fds[1]) < 0)
-		return (debug(DBG("Failed to close pipe_fds[1]")), 0);
+	cmd_idx = data->cmd_index;
+	if (data->pids[cmd_idx] < 0)
+		return (debug(DBG("Failed to fork()")), 0);	
+	else if (data->pids[cmd_idx] == 0)
+	{
+		if (!exec_command(data, cmd_args))
+			return (debug(DBG("Failed to exec_command()")), 0);
+	}
+	else if (data->pids[cmd_idx] > 0)
+	{
+		if (cmd_idx == 0 && data->has_here_doc)
+			waitpid(data->pids[cmd_idx], NULL, 0);
+		if (!close_pipe_ends(data))
+			return (debug(DBG("Failed to close_pipe_ends()")), 0);
+	}
 	return (1);
 }
 
@@ -32,24 +41,28 @@ int	fork_and_exec(t_pipex *data, char **cmd_args)
 	if (pipe(data->pipe_fds) < 0)
 		return (debug(DBG("Failed to pipe()")), 0);
 	cmd_idx = data->cmd_index;
-	if (data->has_here_doc && !handle_heredoc_parsing(data))
-		return (debug(DBG("Failed to handle_heredoc_parsing()")), 0);
+	if (!dup_close_old_read_fds(data))
+		return (debug(DBG("Failed to dup_close_old_read_fds()")), 0);
 	data->pids[cmd_idx] = fork();
-	if (data->pids[cmd_idx] < 0)
-		return (debug(DBG("Failed to fork()")), 0);	
-	else if (data->pids[cmd_idx] == 0)
-	{
-		if (!exec_command(data, cmd_args))
-			return (debug(DBG("Failed to exec_command()")), 0);
-	}
-	else if (data->pids[cmd_idx] > 0)
-	{
-		if (!close_pipes_parent(data))
-			return (debug(DBG("Failed to close_pipes_parent()")), 0);
-		data->old_read_fd = data->pipe_fds[0];
-	}
+	if (!handle_fork(data, cmd_args))
+		return (debug(DBG("Failed to handle_fork()")), 0);
+
 	return (1);
 }
+
+/* loop_on_commands() - Loops on all the comands, and executes each one of them
+ *
+ * @data: the pointer to the main t_pipex structure
+ *
+ * How it works :
+ *
+ * 1. Loop on all the commands
+ *
+ * 2. split the string : turns "wc -l --uniq" into {"wc", "-l" "uniq"} and
+ *	  pass the result to fork_and_exec() to execute
+ *
+ * 3. We free the allocated arrays, and increment the command count.
+ * */
 
 int	loop_on_commands(t_pipex *data)
 {
@@ -57,7 +70,7 @@ int	loop_on_commands(t_pipex *data)
 
 	while (data->cmd_index < data->cmd_count)
 	{
-		cmd_args = ft_split(data->cmds[data->cmd_index], ' ');
+		cmd_args= ft_split(data->cmds[data->cmd_index], ' ');
 		if (!cmd_args)
 			return (debug(DBG("Failed to split command")), 0);
 		if (!fork_and_exec(data, cmd_args))
@@ -69,22 +82,54 @@ int	loop_on_commands(t_pipex *data)
 	return (1);
 }
 
-int	launch_childs(t_pipex *data)
+int	waitpid_loop(t_pipex *data)
 {
-	int		pid_index;
-	int		status;
-		
-	if (!loop_on_commands(data))
-		return (debug(DBG("Failed to loop_on_commands()")), 0);
+	int	pid_index;
+	int	status;
+
 	pid_index = 0;
 	while (pid_index < data->cmd_count)
 	{
-		waitpid(data->pids[pid_index++], &status, 0);
-		if (WIFEXITED(status))
+		waitpid(data->pids[pid_index], &status, 0);	
+		if (WIFEXITED(status) && data->cmd_index == data->cmd_count)
+			data->exit_code = WEXITSTATUS(status);
+		else
 		{
-			if (!data->exit_code)
-				data->exit_code = WEXITSTATUS(status);
-		}	
+			debug(DBG("Failed to WIFEXITED(status)"));
+			return (0);
+		}
+		pid_index++;
 	}
+	return (1);
+}
+
+/* launch_childs() - Loops on all commands and executes them in a child, then 
+ *					 waitpid() on the commands individually to retrieve the
+ *					 first non-zero exit code
+ *
+ * @data: A pointer to the t_pipex main struct
+ * 
+ * How it works :
+ * 1. Calls the loop_on_commands() function and verify it's return value
+ * 
+ * 2. Loops on the commands and waitpid() them individually, then checks the
+ *	  return of WIFEXITED(status) to see if the program exited normally, and if
+ *	  if did, then we check the exit code with WEXITSTATUS(status)
+ */
+
+int	launch_childs(t_pipex *data)
+{
+		
+	if (!loop_on_commands(data))
+	{
+		debug(DBG("Failed to loop_on_commands()"));
+		if (!close_old_read_fds(data))
+			debug(DBG("Failed to close_old_read_fds()"));
+		exit(data->exit_code);
+	}
+	if (!waitpid_loop(data))
+		return (debug(DBG("Failed to waitpid_loop()")), 0);
+	if (!close_old_read_fds(data))
+		return (debug(DBG("Failed to close_old_read_fds()")), 0);
 	return (1);
 }
