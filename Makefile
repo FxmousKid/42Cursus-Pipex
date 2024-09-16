@@ -6,7 +6,7 @@
 #    By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/20 15:53:25 by inazaria          #+#    #+#              #
-#    Updated: 2024/09/16 17:28:03 by inazaria         ###   ########.fr        #
+#    Updated: 2024/09/16 18:27:34 by inazaria         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,7 +58,7 @@ NC		:= $(shell echo -e "\033[0m")
 $(BUILD_DIR_STD)%.o : $(SRC_DIR_STD)%.c
 	@$(MKDIR) $(dir $@)
 	@$(CC) -c $(CFLAGS) $< -o $@
-	@printf "$(BLUE)[CMP] Compiling $< ... $(NC)\n"
+	@echo "$(BLUE)[CMP] Compiling $< ... $(NC)"
 
 libft : 
 	@echo -e "$(BROWN)[BLD] Building libft...$(NC)"
