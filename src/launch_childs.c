@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 19:51:24 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/15 23:56:31 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/16 17:32:51 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	handle_fork(t_pipex *data, char **cmd_args)
 
 	cmd_idx = data->cmd_index;
 	if (data->pids[cmd_idx] < 0)
-		return (debug(DBG("Failed to fork()")), 0);	
+		return (debug(DBG("Failed to fork()")), 0);
 	else if (data->pids[cmd_idx] == 0)
 	{
 		if (!exec_command(data, cmd_args))
@@ -46,7 +46,6 @@ int	fork_and_exec(t_pipex *data, char **cmd_args)
 	data->pids[cmd_idx] = fork();
 	if (!handle_fork(data, cmd_args))
 		return (debug(DBG("Failed to handle_fork()")), 0);
-
 	return (1);
 }
 
@@ -70,11 +69,11 @@ int	loop_on_commands(t_pipex *data)
 
 	while (data->cmd_index < data->cmd_count)
 	{
-		cmd_args= ft_split(data->cmds[data->cmd_index], ' ');
+		cmd_args = ft_split(data->cmds[data->cmd_index], ' ');
 		if (!cmd_args)
 			return (debug(DBG("Failed to split command")), 0);
 		if (!fork_and_exec(data, cmd_args))
-			return (debug(DBG("Failed to fork_and_exec()")), 
+			return (debug(DBG("Failed to fork_and_exec()")),
 				free_split(cmd_args), 0);
 		free_split(cmd_args);
 		data->cmd_index++;
@@ -90,7 +89,7 @@ int	waitpid_loop(t_pipex *data)
 	pid_index = 0;
 	while (pid_index < data->cmd_count)
 	{
-		waitpid(data->pids[pid_index], &status, 0);	
+		waitpid(data->pids[pid_index], &status, 0);
 		if (WIFEXITED(status) && data->cmd_index == data->cmd_count)
 			data->exit_code = WEXITSTATUS(status);
 		else
@@ -108,7 +107,7 @@ int	waitpid_loop(t_pipex *data)
  *					 first non-zero exit code
  *
  * @data: A pointer to the t_pipex main struct
- * 
+ *  
  * How it works :
  * 1. Calls the loop_on_commands() function and verify it's return value
  * 
@@ -119,7 +118,6 @@ int	waitpid_loop(t_pipex *data)
 
 int	launch_childs(t_pipex *data)
 {
-		
 	if (!loop_on_commands(data))
 	{
 		debug(DBG("Failed to loop_on_commands()"));
@@ -131,5 +129,6 @@ int	launch_childs(t_pipex *data)
 		return (debug(DBG("Failed to waitpid_loop()")), 0);
 	if (!close_old_read_fds(data))
 		return (debug(DBG("Failed to close_old_read_fds()")), 0);
+	display_pipex_t(data);
 	return (1);
 }

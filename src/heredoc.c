@@ -6,12 +6,11 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 20:16:45 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/16 00:23:30 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/16 17:33:47 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <unistd.h>
 
 int	handle_heredoc_parsing(t_pipex *data)
 {
@@ -22,7 +21,7 @@ int	handle_heredoc_parsing(t_pipex *data)
 	limiter = data->limiter;
 	ft_printf("> ");
 	line = get_next_line(STDIN_FILENO);
-	while (line && ft_strncmp(line, limiter, ft_strlen(line) - 1) != 0)	
+	while (line && ft_strncmp(line, limiter, ft_strlen(line) - 1) != 0)
 	{
 		write_qty = write(data->pipe_fds[1], line, ft_strlen(line));
 		if (write_qty < 0)

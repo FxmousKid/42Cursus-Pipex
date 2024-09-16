@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:19:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/15 22:00:58 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/16 17:52:51 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define PIPEX_H
 
 # include "../libft/includes/libft.h"
-#include <limits.h>
+# include <limits.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
@@ -41,8 +41,8 @@
 
 # define EXIT_COMMAND_NOT_FOUND 127
 
-# define STRINGIFY(x) #x
-# define TOSTRING(x) STRINGIFY(x)
+//# define STRINGIFY(x) #x
+//# define TOSTRING(x) STRINGIFY(x)
 
 # define DBG(reason) reason " at line " \
 TOSTRING(__LINE__) " in file " __FILE__ "\n"
@@ -63,7 +63,6 @@ typedef struct s_pipex
 	char	current_cmd_path[4096];
 	char	**env;
 }			t_pipex;
-
 
 // Error management
 void	custom_name_error(char *file, char *text);

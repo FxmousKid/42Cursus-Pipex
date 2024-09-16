@@ -6,7 +6,7 @@
 #    By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/20 15:53:25 by inazaria          #+#    #+#              #
-#    Updated: 2024/09/15 20:29:30 by inazaria         ###   ########.fr        #
+#    Updated: 2024/09/16 17:28:03 by inazaria         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,13 +24,13 @@ DEBUG_FILE_PATH_STD = ./src/error_management/debugging_function
 DEBUG_BUILD_PATH_STD 	= ./build/error_management/debugging_function
 
 SRC_STD_NAMES	= main.c
-SRC_STD_NAMES	+= make_t_pipex.c
 SRC_STD_NAMES	+= launch_childs.c
 SRC_STD_NAMES	+= exec.c
-SRC_STD_NAMES	+= manage_files.c
 SRC_STD_NAMES	+= heredoc.c
+SRC_STD_NAMES	+= utils/make_t_pipex.c
 SRC_STD_NAMES	+= utils/exec_utils.c
-SRC_STD_NAMES	+= utils/file_descriptors_utils.c
+SRC_STD_NAMES	+= utils/manage_files.c
+SRC_STD_NAMES	+= utils/manage_file_descriptors.c
 SRC_STD_NAMES	+= error_management/error_management.c
 SRC_STD_NAMES	+= error_management/free_utils.c
 
