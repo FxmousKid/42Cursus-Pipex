@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 23:18:21 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/16 17:37:08 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/16 18:19:36 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,7 @@ int	open_infile(t_pipex *data)
 	if (fd < 0)
 	{
 		custom_name_error(data->infile_path, FILE_NOT_FOUND);
-		fd = open("/dev/null", O_RDONLY);
-		if (fd < 0)
-		{
-			custom_name_error("/dev/null", FILE_NOT_FOUND);
-			return (0);
-		}
-		data->infile_path = NULL;
+		return (0);
 	}
 	return (fd);
 }

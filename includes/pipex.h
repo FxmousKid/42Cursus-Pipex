@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:19:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/16 17:52:51 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/16 18:17:36 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@
 
 # define EXIT_COMMAND_NOT_FOUND 127
 
-//# define STRINGIFY(x) #x
-//# define TOSTRING(x) STRINGIFY(x)
+# define STRINGIFY(x) #x
+# define TOSTRING(x) STRINGIFY(x)
 
 # define DBG(reason) reason " at line " \
 TOSTRING(__LINE__) " in file " __FILE__ "\n"

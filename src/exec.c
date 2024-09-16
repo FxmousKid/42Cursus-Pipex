@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 12:11:43 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/16 17:31:41 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/16 18:20:30 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	first_command_child(t_pipex *data, char **cmd_args)
 	else if (!data->has_here_doc)
 	{
 		fd = open_infile(data);
-		if (fd < 0)
+		if (fd <= 0)
 			return (debug(DBG("Failed to open_infile()")), 0);
 		if (dup2(fd, STDIN_FILENO) < 0)
 			return (debug(DBG("Failed to dup2 stdin")), 0);

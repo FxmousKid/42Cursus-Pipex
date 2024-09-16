@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 19:51:24 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/16 17:32:51 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/16 18:20:41 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,5 @@ int	launch_childs(t_pipex *data)
 		return (debug(DBG("Failed to waitpid_loop()")), 0);
 	if (!close_old_read_fds(data))
 		return (debug(DBG("Failed to close_old_read_fds()")), 0);
-	display_pipex_t(data);
 	return (1);
 }
