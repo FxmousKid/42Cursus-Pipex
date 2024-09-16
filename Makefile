@@ -6,7 +6,7 @@
 #    By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/20 15:53:25 by inazaria          #+#    #+#              #
-#    Updated: 2024/09/16 18:27:34 by inazaria         ###   ########.fr        #
+#    Updated: 2024/09/16 18:29:43 by inazaria         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,14 +60,12 @@ $(BUILD_DIR_STD)%.o : $(SRC_DIR_STD)%.c
 	@$(CC) -c $(CFLAGS) $< -o $@
 	@echo "$(BLUE)[CMP] Compiling $< ... $(NC)"
 
-libft : 
+-include $(DEP_FILES_STD)
+
+$(NAME_STD) : $(OBJ_FILES_STD)
 	@echo -e "$(BROWN)[BLD] Building libft...$(NC)"
 	@$(MAKE) --no-print-directory -s -C libft all 
 	@echo -e "$(GREEN)[BLD] Libft built successfully.$(NC)"
-
--include $(DEP_FILES_STD)
-
-$(NAME_STD) : $(OBJ_FILES_STD) libft
 	@echo -e "$(BROWN)[BLD] Building Pipex executable...$(NC)"
 	@$(RM) $(DEBUG_BUILD_PATH).[od]
 	@$(RM) $(NAME_STD)
