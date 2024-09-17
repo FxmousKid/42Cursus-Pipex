@@ -74,4 +74,14 @@ Enjoy ! 😊
 </br>
 
 ## Some Pipex quirks not to forget :
+ * return  `127` if the **last** command is not found
+ * try to `open()` first before trying to see if the command exists, and exit
+ as soon as one of them fails
+ * the main program must only return the exit status of the **last** command (assuming 
+ infile and outifle are opened successfully)
+ * check for **permission** first before trying to open the file, and exit accordingly
+ * bash posix 5.1 with `< file_does_not_exit command_does_not_exit | cat > out.txt` display both 
+ file_does_not_exit : No such file or directory and command_does_not_exit : command not found, whereas
+ bash posix 5.2 only displays file_does_not_exit : No such file or directory
+ * if outfile doesn't exist, check if you have the permission to create it in the directory
 

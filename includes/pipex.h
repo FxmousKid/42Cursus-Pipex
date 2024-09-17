@@ -6,7 +6,7 @@
 /*   By: inazaria <inazaria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 18:19:49 by inazaria          #+#    #+#             */
-/*   Updated: 2024/09/16 18:17:36 by inazaria         ###   ########.fr       */
+/*   Updated: 2024/09/17 02:15:45 by inazaria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 # define FILE_NOT_FOUND "No such file or directory\n"
 
 # define EXIT_COMMAND_NOT_FOUND 127
+# define EXIT_PERMISSION_ERROR 1
 
 # define STRINGIFY(x) #x
 # define TOSTRING(x) STRINGIFY(x)
@@ -66,6 +67,7 @@ typedef struct s_pipex
 
 // Error management
 void	custom_name_error(char *file, char *text);
+void	custom_name_perror(char *file);
 void	print_correct_pipex_usage(void);
 void	free_split(char **tab);
 void	debug(char *str);
